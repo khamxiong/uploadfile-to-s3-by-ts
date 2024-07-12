@@ -1,12 +1,12 @@
-import { useState,FC } from "react";
+import { useState,FC,ChangeEvent  } from "react";
 import axios from "axios";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { API_LINK } from "../constants/api";
 const UpLoadPage: FC = () => {
-    const [image, setImage] = useState<string[] | null>(null);
+  const [images, setImages] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(false);
       const uploadImage = async (e: ChangeEvent <HTMLInputElement>) => {
-    const selectedFile = e?.target?.files[0];
+        const selectedFile = e?.target?.files?.[0];
     if (
       !selectedFile?.type?.includes("image/png") &&
       !selectedFile?.type?.includes("image/jpeg") &&
@@ -20,7 +20,7 @@ const UpLoadPage: FC = () => {
    try{
     const response = await axios.post(`${API_LINK}/api/v1/upload`, formData);
     const data = await response.data;
-    setImage(data.urls);
+    setImages(data.urls);
     setIsLoading(false);
    }catch(error){
     console.log(error);
@@ -44,7 +44,7 @@ const UpLoadPage: FC = () => {
        <input type="file" onChange={uploadImage}  className="w-full h-full inset-0 absolute  opacity-0 cursor-pointer"/>
     </div> 
     }
-     {image && <div className="mt-4" > {image.map((url: string) => <img key={url} src={url} className="inline-block"/>)}</div>}
+     {images && <div className="mt-4" > {images?.map((url: string) => <img key={url} src={url} className="inline-block"/>)}</div>}
     </div>
   </div>
   )
